@@ -1,0 +1,9 @@
+Store Name          Registration No     Floor No  
+------------------------------------------------
+Puma                2                   1         
+
+Products:
+Product Name        Quantity       Price     
+-----------------------------------------------
+Shoes               40             5000      
+T-Shirt             50             500       

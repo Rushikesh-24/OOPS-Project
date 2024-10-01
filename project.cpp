@@ -129,9 +129,8 @@ public:
         if (storeFile.is_open()) {
             storeFile << left << setw(20) << "Store Name"
                       << setw(20) << "Registration No"
-                      << setw(15) << "Quantity"
                       << setw(10) << "Floor No" << endl;
-            storeFile << "---------------------------------------------------------------" << endl;
+            storeFile << "------------------------------------------------" << endl;
 
             storeFile << left << setw(20) << storeName
                       << setw(20) << regNo
