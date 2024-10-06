@@ -33,5 +33,19 @@
                 }
             ]
         }
+    ,
+        {
+            "id": "store6807",
+            "name": "Adidas",
+            "registration_no": "1",
+            "floor_no": 1,
+            "products": [
+                {
+                    "name": "Shoes",
+                    "quantity": 200000,
+                    "price": 20
+                }
+            ]
+        }
     ]
 }
