@@ -19,5 +19,19 @@
                 }
             ]
         }
-        ]
+        ,
+        {
+            "id": "store6807",
+            "name": "Puma",
+            "registration_no": "1",
+            "floor_no": 0,
+            "products": [
+                {
+                    "name": "Shoes",
+                    "quantity": 20,
+                    "price": 200
+                }
+            ]
+        }
+    ]
 }

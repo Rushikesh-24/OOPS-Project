@@ -530,7 +530,7 @@ int main() {
     case 1:
       store.enterStoreDetails();
       system("git add .");
-      system("git commit");
+      system("git commit -m \"Updated Products\"");
       system("git push");
       break;
     case 2:
@@ -539,7 +539,7 @@ int main() {
       store.setStoreName(storeName);
       store.editStoreDetails();
       system("git add .");
-      system("git commit");
+      system("git commit -m \"Updated Products\"");
       system("git push");
       break;
     case 3:
