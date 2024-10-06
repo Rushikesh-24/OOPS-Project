@@ -1,7 +1,7 @@
 // Fetch store details from store.json
 let storeDetails = [];
 
-fetch('./store.json')
+fetch(`./store.json?timestamp=${new Date().getTime()}`)
   .then(response => response.json())
   .then(data => {
     storeDetails = data.stores;
