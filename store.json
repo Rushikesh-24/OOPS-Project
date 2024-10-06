@@ -35,5 +35,29 @@
                 }
             ]
         }
+    ,
+        {
+            "id": "store99453",
+            "name": "Adidas",
+            "registration_no": "3",
+            "floor_no": 3,
+            "products": [
+                {
+                    "name": "Shoes",
+                    "quantity": 10,
+                    "price": 2000
+                },
+                {
+                    "name": "Shirt",
+                    "quantity": 50,
+                    "price": 100
+                },
+                {
+                    "name": "Pants",
+                    "quantity": 50,
+                    "price": 600
+                }
+            ]
+        }
     ]
 }
