@@ -159,8 +159,9 @@ public:
 
     // Prepare new store data
     stringstream newStoreData;
+    srand(std::time(0));
     newStoreData << "{\n";
-    newStoreData << "            \"id\": \"store" << rand() % 10000 << "\",\n";
+    newStoreData << "            \"id\": \"store" << rand() % 100000 << "\",\n";
     newStoreData << "            \"name\": \"" << escapeJsonString(storeName)
                  << "\",\n";
     newStoreData << "            \"registration_no\": \""
@@ -415,8 +416,9 @@ public:
     }
 
     // Add new store data
+    srand(std::time(0));
     newStoreData << "\n        {\n";
-    newStoreData << "            \"id\": \"store" << rand() % 10000 << "\",\n";
+    newStoreData << "            \"id\": \"store" << rand() % 100000 << "\",\n";
     newStoreData << "            \"name\": \"" << escapeJsonString(storeName)
                  << "\",\n";
     newStoreData << "            \"registration_no\": \""

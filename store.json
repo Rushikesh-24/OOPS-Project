@@ -1,49 +1,23 @@
 {
     "stores": [
-        {},
-        {
-            "id": "store5249",
-            "name": "Nike",
-            "registration_no": "2",
-            "floor_no": 2,
-            "products": [
-                {
-                    "name": "Shoes",
-                    "quantity": 200,
-                    "price": 20000
-                },
-                {
-                    "name": "Shirt",
-                    "quantity": 2000,
-                    "price": 5000
-                }
-            ]
-        }
-        ,
-        {
-            "id": "store6807",
-            "name": "Puma",
-            "registration_no": "1",
-            "floor_no": 0,
-            "products": [
-                {
-                    "name": "Shoes",
-                    "quantity": 20,
-                    "price": 200
-                }
-            ]
-        }
+        {}
+        
     ,
         {
-            "id": "store6807",
-            "name": "Adidas",
+            "id": "store11621",
+            "name": "Nike",
             "registration_no": "1",
             "floor_no": 1,
             "products": [
                 {
                     "name": "Shoes",
-                    "quantity": 200000,
-                    "price": 20
+                    "quantity": 40,
+                    "price": 10000
+                },
+                {
+                    "name": "T-shirt",
+                    "quantity": 20,
+                    "price": 200
                 }
             ]
         }

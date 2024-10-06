@@ -1,8 +1,0 @@
-Store Name          Registration No     Floor No  
-------------------------------------------------
-Puma                1                   0         
-
-Products:
-Product Name        Quantity       Price     
------------------------------------------------
-Shoes               20             200       
