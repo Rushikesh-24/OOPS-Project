@@ -59,5 +59,24 @@
                 }
             ]
         }
+    ,
+        {
+            "id": "store72008",
+            "name": "PumaDas",
+            "registration_no": "4",
+            "floor_no": 2,
+            "products": [
+                {
+                    "name": "Hiking",
+                    "quantity": 0,
+                    "price": 3.86751e+28
+                },
+                {
+                    "name": "",
+                    "quantity": 0,
+                    "price": 3.86751e+28
+                }
+            ]
+        }
     ]
 }

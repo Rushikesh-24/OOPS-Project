@@ -164,6 +164,12 @@ function showStoreDetails(storeId) {
                     </table>
                 </div>
             </div>
+
+            <div class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center border group">
+                <a href="${store.name}.txt" class="text-gray-400 group-hover:text-gray-300">
+                    Download Store Details
+                </a>
+            </div>
         </div>
     `;
 

@@ -1,0 +1,9 @@
+Store Name          Registration No     Floor No  
+------------------------------------------------
+PumaDas             4                   2         
+
+Products:
+Product Name        Quantity       Price     
+-----------------------------------------------
+Hiking              0              3.86751e+28
+                    0              3.86751e+28
