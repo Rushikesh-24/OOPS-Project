@@ -59,5 +59,24 @@
                 }
             ]
         }
+    ,
+        {
+            "id": "store82210",
+            "name": "Max",
+            "registration_no": "4",
+            "floor_no": 1,
+            "products": [
+                {
+                    "name": "shirt",
+                    "quantity": 20,
+                    "price": 400
+                },
+                {
+                    "name": "pant",
+                    "quantity": 10,
+                    "price": 100
+                }
+            ]
+        }
     ]
 }
