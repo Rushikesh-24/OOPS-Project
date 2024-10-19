@@ -2,17 +2,7 @@
     "stores": [
         {}
     ,
-        {
-            "id": "store41196",
-            "name": "Nike",
-            "registration_no": "1",
-            "floor_no": 1,
-            "products": [
-                {
-                    "name": "Shoes",
-                    "quantity": 2,
-                    "price": 200
-                },
+        
                 {
                     "name": "T-shits",
                     "quantity": 20,

@@ -1,9 +1,0 @@
-Store Name          Registration No     Floor No  
-------------------------------------------------
-Nike                1                   1         
-
-Products:
-Product Name        Quantity       Price     
------------------------------------------------
-Shoes               2              200       
-T-shits             20             2         
