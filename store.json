@@ -1,14 +1,5 @@
 {
     "stores": [
         {}
-    ,
-        
-                {
-                    "name": "T-shits",
-                    "quantity": 20,
-                    "price": 2
-                }
-            ]
-        }
     ]
 }
