@@ -1,5 +1,24 @@
 {
     "stores": [
         {}
+    ,
+        {
+            "id": "store80836",
+            "name": "Nike",
+            "registration_no": "1",
+            "floor_no": 2,
+            "products": [
+                {
+                    "name": "Shoes",
+                    "quantity": 20,
+                    "price": 2000
+                },
+                {
+                    "name": "Shirt",
+                    "quantity": 30,
+                    "price": 4000
+                }
+            ]
+        }
     ]
 }

@@ -1,0 +1,9 @@
+Store Name          Registration No     Floor No  
+------------------------------------------------
+Nike                1                   2         
+
+Products:
+Product Name        Quantity       Price     
+-----------------------------------------------
+Shoes               20             2000      
+Shirt               30             4000      

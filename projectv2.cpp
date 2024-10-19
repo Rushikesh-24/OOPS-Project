@@ -502,11 +502,14 @@ public:
     }
   }
 
-  // New method to delete a store
-   void deleteStore(const string& name) {
+ 
+// Method to delete a store
+void deleteStore(const string& name) {
     // Delete the store file
     if (remove((name + ".txt").c_str()) != 0) {
         cerr << "Error deleting file: " << name + ".txt" << endl;
+    } else {
+        cout << "Store file " << name + ".txt" << " deleted successfully." << endl;
     }
 
     // Update the JSON file
@@ -521,31 +524,38 @@ public:
     string jsonContent = buffer.str();
     jsonFile.close();
 
+    // Find the store object in the JSON content
     size_t storeStart = jsonContent.find("\"name\": \"" + name + "\"");
     if (storeStart == string::npos) {
         cout << "Store not found in JSON file." << endl;
         return;
     }
 
+    // Find the start and end of the store object
     size_t objectStart = jsonContent.rfind("{", storeStart);
     size_t objectEnd = jsonContent.find("}", storeStart);
 
     if (objectStart != string::npos && objectEnd != string::npos) {
+        // Erase the store object from the JSON content
         jsonContent.erase(objectStart, objectEnd - objectStart + 1);
+
         // Remove trailing comma if present
-        size_t commaPos = jsonContent.find_first_not_of(" \n\r\t", objectStart);
+        size_t commaPos = jsonContent.find_last_not_of(" \n\r\t", objectStart);
         if (commaPos != string::npos && jsonContent[commaPos] == ',') {
             jsonContent.erase(commaPos, 1);
         }
-    }
 
-    ofstream outFile("store.json");
-    if (outFile.is_open()) {
-        outFile << jsonContent;
-        outFile.close();
-        cout << "Store deleted successfully from JSON file." << endl;
+        // Write the updated JSON content back to the file
+        ofstream outFile("store.json");
+        if (outFile.is_open()) {
+            outFile << jsonContent;
+            outFile.close();
+            cout << "Store deleted successfully from JSON file." << endl;
+        } else {
+            cerr << "Error: Could not open store.json for writing" << endl;
+        }
     } else {
-        cerr << "Error: Could not open store.json for writing" << endl;
+        cout << "Error: Invalid JSON structure." << endl;
     }
 }
 
