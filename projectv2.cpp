@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -155,7 +156,9 @@ public:
     }
 
     // Find the store to update
-    auto [storeStart, storeEnd] = findStoreInJSON(storesContent);
+    pair<size_t, size_t> storePos = findStoreInJSON(storesContent);
+    size_t storeStart = storePos.first;
+    size_t storeEnd = storePos.second;
     if (storeStart == string::npos) {
       cout << "Error: Store not found in JSON file" << endl;
       return;
@@ -222,7 +225,7 @@ public:
   void enterStoreDetails() {
     while (true) {
       cout << "Enter Store Name: ";
-      cin >> storeName;
+      getline(cin, storeName);
 
       if (storeExists(storeName)) {
         cout << "Store name already exists! Please choose a different name.\n";
@@ -232,7 +235,7 @@ public:
     }
 
     cout << "Enter Registration Number: ";
-    cin >> regNo;
+    getline(cin, regNo);
     cout << "Enter Floor Number: ";
     cin >> floorNo;
 
@@ -246,6 +249,7 @@ public:
         int numProducts;
         cout << "Enter number of products: ";
         cin >> numProducts;
+        cin.ignore(); // To ignore the newline character left in the buffer
 
         for (int i = 0; i < numProducts; ++i) {
             string productName;
@@ -254,7 +258,7 @@ public:
 
             cout << "\nEnter details for Product " << i + 1 << ":\n";
             cout << "Product Name: ";
-            cin >> productName;
+            getline(cin, productName);
 
             size_t existingIndex;
             if (findProduct(productName, existingIndex)) {
@@ -265,6 +269,7 @@ public:
                 
                 int choice;
                 cin >> choice;
+                cin.ignore(); // To ignore the newline character left in the buffer
                 
                 if (choice == 1) {
                     editProduct(existingIndex);
@@ -277,6 +282,7 @@ public:
             cin >> productQuantity;
             cout << "Product Price: ";
             cin >> productPrice;
+            cin.ignore(); // To ignore the newline character left in the buffer
 
             // Creating new Product object
             Product newProduct(productName, productQuantity, productPrice);
@@ -285,7 +291,7 @@ public:
     }
 
   // Method to edit store details (Encapsulation)
-  void editStoreDetails(){
+  void editStoreDetails() {
     if (!storeExists(storeName)) {
       cout << "Store doesn't exist! Please enter a valid store name.\n";
       return;
@@ -293,49 +299,51 @@ public:
 
     cout << "Editing details for store: " << storeName << endl;
     cout << "Enter new Registration Number (current: " << regNo << "): ";
-    cin >> regNo;
+    cin.ignore(); // To ignore any leftover newline character in the buffer
+    getline(cin, regNo);
     cout << "Enter new Floor Number (current: " << floorNo << "): ";
     cin >> floorNo;
 
     // Ask if user wants to edit products
-        char editProducts;
-        cout << "\nDo you want to edit products? (y/n): ";
-        cin >> editProducts;
+    char editProducts;
+    cout << "\nDo you want to edit products? (y/n): ";
+    cin >> editProducts;
 
-        if (tolower(editProducts) == 'y') {
-            cout << "\nCurrent products:\n";
-            cout << left << setw(20) << "Product Name" << setw(15) << "Quantity" 
-                 << setw(10) << "Price" << endl;
-            cout << "-----------------------------------------------" << endl;
-            
-            for (const auto& product : products) {
-                product.displayProduct();
-            }
+    if (tolower(editProducts) == 'y') {
+      cout << "\nCurrent products:\n";
+      cout << left << setw(20) << "Product Name" << setw(15) << "Quantity"
+           << setw(10) << "Price" << endl;
+      cout << "-----------------------------------------------" << endl;
 
-            cout << "\n1. Add new products\n";
-            cout << "2. Edit existing products\n";
-            cout << "Enter your choice: ";
-            
-            int choice;
-            cin >> choice;
+      for (size_t i = 0; i < products.size(); ++i) {
+        products[i].displayProduct();
+      }
 
-            if (choice == 1) {
-                enterProductDetails();
-            } else if (choice == 2) {
-                string productName;
-                cout << "\nEnter product name to edit (or 'done' to finish): ";
-                
-                while (cin >> productName && productName != "done") {
-                    size_t index;
-                    if (findProduct(productName, index)) {
-                        editProduct(index);
-                    } else {
-                        cout << "Product not found!\n";
-                    }
-                    cout << "\nEnter product name to edit (or 'done' to finish): ";
-                }
-            }
+      cout << "\n1. Add new products\n";
+      cout << "2. Edit existing products\n";
+      cout << "Enter your choice: ";
+
+      int choice;
+      cin >> choice;
+
+      if (choice == 1) {
+        enterProductDetails();
+      } else if (choice == 2) {
+        string productName;
+        cout << "\nEnter product name to edit (or 'done' to finish): ";
+        cin.ignore(); // To ignore any leftover newline character in the buffer
+
+        while (getline(cin, productName) && productName != "done") {
+          size_t index;
+          if (findProduct(productName, index)) {
+            editProduct(index);
+          } else {
+            cout << "Product not found!\n";
+          }
+          cout << "\nEnter product name to edit (or 'done' to finish): ";
         }
+      }
+    }
 
     saveToFile();
     updateJSON();
@@ -344,36 +352,37 @@ public:
   // Helper function to escape special characters in JSON strings
   string escapeJsonString(const string &input) const {
     stringstream output;
-    for (char ch : input) {
+    for (size_t i = 0; i < input.length(); ++i) {
+      char ch = input[i];
       switch (ch) {
       case '\"':
-        output << "\\\"";
-        break;
+      output << "\\\"";
+      break;
       case '\\':
-        output << "\\\\";
-        break;
+      output << "\\\\";
+      break;
       case '\b':
-        output << "\\b";
-        break;
+      output << "\\b";
+      break;
       case '\f':
-        output << "\\f";
-        break;
+      output << "\\f";
+      break;
       case '\n':
-        output << "\\n";
-        break;
+      output << "\\n";
+      break;
       case '\r':
-        output << "\\r";
-        break;
+      output << "\\r";
+      break;
       case '\t':
-        output << "\\t";
-        break;
+      output << "\\t";
+      break;
       default:
-        if ('\x00' <= ch && ch <= '\x1f') {
-          output << "\\u" << std::hex << std::setw(4) << std::setfill('0')
-                 << static_cast<int>(ch);
-        } else {
-          output << ch;
-        }
+      if ('\x00' <= ch && ch <= '\x1f') {
+        output << "\\u" << std::hex << std::setw(4) << std::setfill('0')
+           << static_cast<int>(ch);
+      } else {
+        output << ch;
+      }
       }
     }
     return output.str();
@@ -579,49 +588,47 @@ int main() {
     Store store; // Object creation (Instantiation)
 
     do {
-        cout << "\nShopping Mall System Menu:\n";
-        cout << "1. Enter Store Details\n";
-        cout << "2. Edit Store Details\n";
-        cout << "3. Display Store Details\n";
-        cout << "4. Delete Store\n";
-        cout << "5. Update Database\n";
-        cout << "6. Exit\n";
-        cout << "Enter your choice: ";
-        cin >> choice;
+      cout << "\nShopping Mall System Menu:\n";
+      cout << "1. Enter Store Details\n";
+      cout << "2. Edit Store Details\n";
+      cout << "3. Display Store Details\n";
+      cout << "4. Delete Store\n";
+      cout << "5. Update Database\n";
+      cout << "6. Exit\n";
+      cout << "Enter your choice: ";
+      cin >> choice;
+      cin.ignore(); // To ignore the newline character left in the buffer
 
-        switch (choice) {
-        case 1:
-            store.enterStoreDetails();
-            gitOperations();
-            break;
-        case 2:
-            cout << "Enter Store Name to Edit: ";
-            cin >> storeName;
-            store.setStoreName(storeName);
-            store.editStoreDetails();
-            gitOperations();
-            break;
-        case 3:
-            cout << "Enter Store Name to Display: ";
-            cin >> storeName;
-            store.setStoreName(storeName);
-            store.displayStoreDetails();
-            break;
-        case 4:
-            cout << "Enter Store Name to Delete: ";
-            cin >> storeName;
-            store.deleteStore(storeName);
-            gitOperations();
-            break;
-        case 5:
-            gitOperations();
-            break;
-        case 6:
-            cout << "Exiting...\n";
-            break;
-        default:
-            cout << "Invalid choice. Please try again.\n";
-        }
+      switch (choice) {
+      case 1:
+        store.enterStoreDetails();
+        break;
+      case 2:
+        cout << "Enter Store Name to Edit: ";
+        getline(cin, storeName);
+        store.setStoreName(storeName);
+        store.editStoreDetails();
+        break;
+      case 3:
+        cout << "Enter Store Name to Display: ";
+        getline(cin, storeName);
+        store.setStoreName(storeName);
+        store.displayStoreDetails();
+        break;
+      case 4:
+        cout << "Enter Store Name to Delete: ";
+        getline(cin, storeName);
+        store.deleteStore(storeName);
+        break;
+      case 5:
+        gitOperations();
+        break;
+      case 6:
+        cout << "Exiting...\n";
+        break;
+      default:
+        cout << "Invalid choice. Please try again.\n";
+      }
     } while (choice != 6);
 
     return 0;

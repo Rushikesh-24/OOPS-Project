@@ -30,9 +30,9 @@ function showErrorAlert(message) {
 
 // Function to format currency
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'INR'
     }).format(amount);
 }
 
@@ -81,7 +81,8 @@ function generateStoreCards() {
 
     storeContainer.innerHTML = ''; // Clear existing content
 
-    storeDetails.slice(1).forEach(store => {
+    storeDetails.forEach(store => {
+        if (!store.name) return; // Skip stores without a name
         const totalProducts = store.products.length;
         const isActive = Math.random() > 0.3; // Random active status for demo
 
@@ -165,9 +166,12 @@ function showStoreDetails(storeId) {
                 </div>
             </div>
 
-            <div class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center border group">
-                <a href="${store.name}.txt" class="text-gray-400 group-hover:text-gray-300">
-                    Download Store Details
+            <div class="flex justify-end">
+                <a href="${store.name}.txt" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded inline-flex items-center transition duration-150 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                    <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/>
+                    </svg>
+                    <span>Download</span>
                 </a>
             </div>
         </div>
