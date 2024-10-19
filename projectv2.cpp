@@ -40,6 +40,7 @@ public:
 // Class definition for Store
 class Store {
 private:
+  string creationDate;
   string storeName;
   string regNo;
   int floorNo;
@@ -70,7 +71,6 @@ private:
         cout << "\nCurrent details for product '" << products[index].productName << "':\n";
         cout << "Quantity: " << products[index].productQuantity << "\n";
         cout << "Price: " << products[index].productPrice << "\n";
-
         cout << "\nEnter new details (or enter -1 to keep current value):\n";
         
         int newQuantity;
@@ -170,23 +170,24 @@ public:
     newStoreData << "{\n";
     newStoreData << "            \"id\": \"store" << rand() % 100000 << "\",\n";
     newStoreData << "            \"name\": \"" << escapeJsonString(storeName)
-                 << "\",\n";
+           << "\",\n";
     newStoreData << "            \"registration_no\": \""
-                 << escapeJsonString(regNo) << "\",\n";
+           << escapeJsonString(regNo) << "\",\n";
     newStoreData << "            \"floor_no\": " << floorNo << ",\n";
+    newStoreData << "            \"creation_date\": \"" << escapeJsonString(creationDate) << "\",\n";
     newStoreData << "            \"products\": [\n";
 
     for (size_t i = 0; i < products.size(); ++i) {
       newStoreData << "                {\n";
       newStoreData << "                    \"name\": \""
-                   << escapeJsonString(products[i].productName) << "\",\n";
+             << escapeJsonString(products[i].productName) << "\",\n";
       newStoreData << "                    \"quantity\": "
-                   << products[i].productQuantity << ",\n";
+             << products[i].productQuantity << ",\n";
       newStoreData << "                    \"price\": "
-                   << products[i].productPrice << "\n";
+             << products[i].productPrice << "\n";
       newStoreData << "                }";
       if (i < products.size() - 1) {
-        newStoreData << ",";
+      newStoreData << ",";
       }
       newStoreData << "\n";
     }
@@ -209,11 +210,22 @@ public:
     }
   }
   // Default constructor (Encapsulation)
-  Store() : storeName(""), regNo(""), floorNo(0) {}
+  Store() : creationDate(currentDate()), storeName(""), regNo(""), floorNo(0) {}
+
+  // Helper function to get the current date as a string
+  string currentDate() const {
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    stringstream dateStream;
+    dateStream << 1900 + ltm->tm_year << "-"
+               << setw(2) << setfill('0') << 1 + ltm->tm_mon << "-"
+               << setw(2) << setfill('0') << ltm->tm_mday;
+    return dateStream.str();
+  }
 
   // Parameterized constructor (Encapsulation)
   Store(string name, string reg, int floor)
-      : storeName(name), regNo(reg), floorNo(floor) {}
+      : storeName(name), regNo(reg), floorNo(floor), creationDate(currentDate()) {}
 
   // Static method to check if store exists (Encapsulation)
   static bool storeExists(const string &name) {
@@ -299,10 +311,10 @@ public:
 
     cout << "Editing details for store: " << storeName << endl;
     cout << "Enter new Registration Number (current: " << regNo << "): ";
-    cin.ignore(); // To ignore any leftover newline character in the buffer
-    getline(cin, regNo);
+    cin>>regNo;
     cout << "Enter new Floor Number (current: " << floorNo << "): ";
     cin >> floorNo;
+    creationDate = currentDate();
 
     // Ask if user wants to edit products
     char editProducts;
@@ -433,24 +445,25 @@ public:
     newStoreData << "\n        {\n";
     newStoreData << "            \"id\": \"store" << rand() % 100000 << "\",\n";
     newStoreData << "            \"name\": \"" << escapeJsonString(storeName)
-                 << "\",\n";
+           << "\",\n";
     newStoreData << "            \"registration_no\": \""
-                 << escapeJsonString(regNo) << "\",\n";
+           << escapeJsonString(regNo) << "\",\n";
     newStoreData << "            \"floor_no\": " << floorNo << ",\n";
+    newStoreData << "            \"creation_date\": \"" << escapeJsonString(creationDate) << "\",\n";
     newStoreData << "            \"products\": [\n";
 
     // Add products
     for (size_t i = 0; i < products.size(); ++i) {
       newStoreData << "                {\n";
       newStoreData << "                    \"name\": \""
-                   << escapeJsonString(products[i].productName) << "\",\n";
+             << escapeJsonString(products[i].productName) << "\",\n";
       newStoreData << "                    \"quantity\": "
-                   << products[i].productQuantity << ",\n";
+             << products[i].productQuantity << ",\n";
       newStoreData << "                    \"price\": "
-                   << products[i].productPrice << "\n";
+             << products[i].productPrice << "\n";
       newStoreData << "                }";
       if (i < products.size() - 1) {
-        newStoreData << ",";
+      newStoreData << ",";
       }
       newStoreData << "\n";
     }
@@ -476,10 +489,10 @@ public:
     ofstream storeFile(storeName + ".txt");
     if (storeFile.is_open()) {
         storeFile << left << setw(20) << "Store Name" << setw(20)
-                  << "Registration No" << setw(10) << "Floor No" << endl;
-        storeFile << "------------------------------------------------" << endl;
+                  << "Registration No" << setw(20) << "Floor No" << setw(20) << "Creation Date" << endl;
+        storeFile << "--------------------------------------------------------------------------" << endl;
         storeFile << left << setw(20) << storeName << setw(20) << regNo
-                  << setw(10) << floorNo << endl;
+                  << setw(20) << floorNo << setw(20) << creationDate << endl;
         storeFile << "\nProducts:\n";
         storeFile << left << setw(20) << "Product Name" << setw(15) << "Quantity"
                   << setw(10) << "Price" << endl;

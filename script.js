@@ -90,17 +90,18 @@ function generateStoreCards() {
         card.className = 'p-6 bg-gray-50 rounded-xl hover:shadow-md transition-all cursor-pointer';
         card.innerHTML = `
             <div class="flex items-center justify-between mb-4">
-                <h4 class="font-semibold text-gray-800">${store.name}</h4>
-                <span class="px-3 py-1 ${isActive ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'} rounded-full text-sm">
-                    ${isActive ? 'Active' : 'Inactive'}
-                </span>
+            <h4 class="font-semibold text-gray-800">${store.name}</h4>
+            <span class="px-3 py-1 ${isActive ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'} rounded-full text-sm">
+                ${isActive ? 'Active' : 'Inactive'}
+            </span>
             </div>
             <p class="text-gray-600 text-sm mb-4">Floor: ${store.floor_no} | Reg: #${store.registration_no}</p>
+            <div class="text-gray-600 text-sm mb-4">Created on: ${new Date(store.creation_date).toLocaleDateString()}</div>
             <div class="flex justify-between items-center text-sm">
-                <span class="text-gray-600">Products: ${totalProducts}</span>
-                <button class="text-indigo-600 hover:text-indigo-700" onclick="showStoreDetails('${store.id}')">
-                    View Details
-                </button>
+            <span class="text-gray-600">Products: ${totalProducts}</span>
+            <button class="text-indigo-600 hover:text-indigo-700" onclick="showStoreDetails('${store.id}')">
+                View Details
+            </button>
             </div>
         `;
 

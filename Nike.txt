@@ -1,0 +1,8 @@
+Store Name          Registration No     Floor No            Creation Date       
+--------------------------------------------------------------------------
+Nike                1                   1                   2024-10-19          
+
+Products:
+Product Name        Quantity       Price     
+-----------------------------------------------
+Nike Shoes          20             200       

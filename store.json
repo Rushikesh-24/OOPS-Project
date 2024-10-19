@@ -1,51 +1,18 @@
 {
     "stores": [
         {
-            "id": "store76543",
-            "name": "Nike Store",
+            "id": "store8836",
+            "name": "Nike",
             "registration_no": "1",
             "floor_no": 1,
+            "creation_date": "2024-10-19",
             "products": [
                 {
                     "name": "Nike Shoes",
-                    "quantity": 40,
-                    "price": 2000
-                },
-                {
-                    "name": "Nike Bottle",
-                    "quantity": 2,
-                    "price": 2000
-                }
-            ]
-        }
-    ,
-        {
-            "id": "store71524",
-            "name": "Puma",
-            "registration_no": "2",
-            "floor_no": 2,
-            "products": [
-                {
-                    "name": "Shoes",
                     "quantity": 20,
                     "price": 200
-                },
-                {
-                    "name": "Nike Shoes",
-                    "quantity": 40,
-                    "price": 2000
-                },
-                {
-                    "name": "Nike Bottle",
-                    "quantity": 2,
-                    "price": 2000
-                },
-                {
-                    "name": "Puma Shoes",
-                    "quantity": 40,
-                    "price": 5000
                 }
             ]
         }
-    ]
+            ]
 }
