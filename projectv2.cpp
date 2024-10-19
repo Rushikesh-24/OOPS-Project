@@ -554,6 +554,11 @@ void deleteStore(const string& name) {
             jsonContent.erase(commaPos, 1);
         }
 
+        // Clean up any remaining empty objects or commas
+        jsonContent.erase(remove(jsonContent.begin(), jsonContent.end(), '{'), jsonContent.end());
+        jsonContent.erase(remove(jsonContent.begin(), jsonContent.end(), '}'), jsonContent.end());
+        jsonContent.erase(remove(jsonContent.begin(), jsonContent.end(), ','), jsonContent.end());
+
         // Write the updated JSON content back to the file
         ofstream outFile("store.json");
         if (outFile.is_open()) {
