@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -14,7 +15,7 @@ public:
   int productQuantity;
   float productPrice;
 
-  // Constructor (Encapsulation)
+  // Constructor (Encapsulation) // Initialization List
   Product(string name, int quantity, float price)
       : productName(name), productQuantity(quantity), productPrice(price) {}
 
@@ -42,6 +43,7 @@ private:
   string regNo;
   int floorNo;
   vector<Product> products;
+
   // Helper method to parse JSON string to get stores array content
   string getStoresContent(const string &jsonStr) const {
     size_t storesStart = jsonStr.find("[");
@@ -52,37 +54,39 @@ private:
     }
     return "";
   }
-   bool findProduct(const string& productName, size_t& index) const {
-        for (size_t i = 0; i < products.size(); ++i) {
-            if (products[i].productName == productName) {
-                index = i;
-                return true;
-            }
-        }
-        return false;
-    }
-    void editProduct(size_t index) {
-        cout << "\nCurrent details for product '" << products[index].productName << "':\n";
-        cout << "Quantity: " << products[index].productQuantity << "\n";
-        cout << "Price: " << products[index].productPrice << "\n";
 
-        cout << "\nEnter new details (or enter -1 to keep current value):\n";
-        
-        int newQuantity;
-        float newPrice;
-        
-        cout << "New Quantity: ";
-        cin >> newQuantity;
-        if (newQuantity != -1) {
-            products[index].productQuantity = newQuantity;
-        }
-        
-        cout << "New Price: ";
-        cin >> newPrice;
-        if (newPrice != -1) {
-            products[index].productPrice = newPrice;
-        }
+  bool findProduct(const string &productName, size_t &index) const {
+    for (size_t i = 0; i < products.size(); ++i) {
+      if (products[i].productName == productName) {
+        index = i;
+        return true;
+      }
     }
+    return false;
+  }
+  void editProduct(size_t index) {
+    cout << "\nCurrent details for product '" << products[index].productName
+         << "':\n";
+    cout << "Quantity: " << products[index].productQuantity << "\n";
+    cout << "Price: " << products[index].productPrice << "\n";
+
+    cout << "\nEnter new details (or enter -1 to keep current value):\n";
+
+    int newQuantity;
+    float newPrice;
+
+    cout << "New Quantity: ";
+    cin >> newQuantity;
+    if (newQuantity != -1) {
+      products[index].productQuantity = newQuantity;
+    }
+
+    cout << "New Price: ";
+    cin >> newPrice;
+    if (newPrice != -1) {
+      products[index].productPrice = newPrice;
+    }
+  }
 
   // Helper method to find a store in JSON content
   pair<size_t, size_t> findStoreInJSON(const string &jsonContent) const {
@@ -239,49 +243,49 @@ public:
 
   // Method to enter product details (Encapsulation)
   void enterProductDetails() {
-        int numProducts;
-        cout << "Enter number of products: ";
-        cin >> numProducts;
+    int numProducts;
+    cout << "Enter number of products: ";
+    cin >> numProducts;
 
-        for (int i = 0; i < numProducts; ++i) {
-            string productName;
-            int productQuantity;
-            float productPrice;
+    for (int i = 0; i < numProducts; ++i) {
+      string productName;
+      int productQuantity;
+      float productPrice;
 
-            cout << "\nEnter details for Product " << i + 1 << ":\n";
-            cout << "Product Name: ";
-            cin >> productName;
+      cout << "\nEnter details for Product " << i + 1 << ":\n";
+      cout << "Product Name: ";
+      cin >> productName;
 
-            size_t existingIndex;
-            if (findProduct(productName, existingIndex)) {
-                cout << "\nProduct '" << productName << "' already exists.\n";
-                cout << "1. Edit existing product\n";
-                cout << "2. Skip this product\n";
-                cout << "Enter your choice: ";
-                
-                int choice;
-                cin >> choice;
-                
-                if (choice == 1) {
-                    editProduct(existingIndex);
-                }
-                continue;  // Skip to next product
-            }
+      size_t existingIndex;
+      if (findProduct(productName, existingIndex)) {
+        cout << "\nProduct '" << productName << "' already exists.\n";
+        cout << "1. Edit existing product\n";
+        cout << "2. Skip this product\n";
+        cout << "Enter your choice: ";
 
-            // If product doesn't exist, get new product details
-            cout << "Product Quantity: ";
-            cin >> productQuantity;
-            cout << "Product Price: ";
-            cin >> productPrice;
+        int choice;
+        cin >> choice;
 
-            // Creating new Product object
-            Product newProduct(productName, productQuantity, productPrice);
-            products.push_back(newProduct);
+        if (choice == 1) {
+          editProduct(existingIndex);
         }
+        continue; // Skip to next product
+      }
+
+      // If product doesn't exist, get new product details
+      cout << "Product Quantity: ";
+      cin >> productQuantity;
+      cout << "Product Price: ";
+      cin >> productPrice;
+
+      // Creating new Product object
+      Product newProduct(productName, productQuantity, productPrice);
+      products.push_back(newProduct);
     }
+  }
 
   // Method to edit store details (Encapsulation)
-  void editStoreDetails(){
+  void editStoreDetails() {
     if (!storeExists(storeName)) {
       cout << "Store doesn't exist! Please enter a valid store name.\n";
       return;
@@ -294,44 +298,44 @@ public:
     cin >> floorNo;
 
     // Ask if user wants to edit products
-        char editProducts;
-        cout << "\nDo you want to edit products? (y/n): ";
-        cin >> editProducts;
+    char editProducts;
+    cout << "\nDo you want to edit products? (y/n): ";
+    cin >> editProducts;
 
-        if (tolower(editProducts) == 'y') {
-            cout << "\nCurrent products:\n";
-            cout << left << setw(20) << "Product Name" << setw(15) << "Quantity" 
-                 << setw(10) << "Price" << endl;
-            cout << "-----------------------------------------------" << endl;
-            
-            for (const auto& product : products) {
-                product.displayProduct();
-            }
+    if (tolower(editProducts) == 'y') {
+      cout << "\nCurrent products:\n";
+      cout << left << setw(20) << "Product Name" << setw(15) << "Quantity"
+           << setw(10) << "Price" << endl;
+      cout << "-----------------------------------------------" << endl;
 
-            cout << "\n1. Add new products\n";
-            cout << "2. Edit existing products\n";
-            cout << "Enter your choice: ";
-            
-            int choice;
-            cin >> choice;
+      for (const auto &product : products) {
+        product.displayProduct();
+      }
 
-            if (choice == 1) {
-                enterProductDetails();
-            } else if (choice == 2) {
-                string productName;
-                cout << "\nEnter product name to edit (or 'done' to finish): ";
-                
-                while (cin >> productName && productName != "done") {
-                    size_t index;
-                    if (findProduct(productName, index)) {
-                        editProduct(index);
-                    } else {
-                        cout << "Product not found!\n";
-                    }
-                    cout << "\nEnter product name to edit (or 'done' to finish): ";
-                }
-            }
+      cout << "\n1. Add new products\n";
+      cout << "2. Edit existing products\n";
+      cout << "Enter your choice: ";
+
+      int choice;
+      cin >> choice;
+
+      if (choice == 1) {
+        enterProductDetails();
+      } else if (choice == 2) {
+        string productName;
+        cout << "\nEnter product name to edit (or 'done' to finish): ";
+
+        while (cin >> productName && productName != "done") {
+          size_t index;
+          if (findProduct(productName, index)) {
+            editProduct(index);
+          } else {
+            cout << "Product not found!\n";
+          }
+          cout << "\nEnter product name to edit (or 'done' to finish): ";
         }
+      }
+    }
 
     saveToFile();
     updateJSON();
@@ -460,31 +464,23 @@ public:
 
   // Method to save store details to file (Encapsulation)
   void saveToFile() {
-    ofstream storeFile;
-    string fileName = storeName + ".txt";
-    storeFile.open(fileName, ios::out);
-
+    ofstream storeFile(storeName + ".txt");
     if (storeFile.is_open()) {
       storeFile << left << setw(20) << "Store Name" << setw(20)
                 << "Registration No" << setw(10) << "Floor No" << endl;
       storeFile << "------------------------------------------------" << endl;
-
       storeFile << left << setw(20) << storeName << setw(20) << regNo
                 << setw(10) << floorNo << endl;
-
       storeFile << "\nProducts:\n";
       storeFile << left << setw(20) << "Product Name" << setw(15) << "Quantity"
                 << setw(10) << "Price" << endl;
       storeFile << "-----------------------------------------------" << endl;
-
-      // Iterating through products (Polymorphism)
-      for (Product &product : products) {
-        product.saveProduct(storeFile);
+      for (size_t i = 0; i < products.size(); ++i) {
+        products[i].saveProduct(storeFile);
       }
-
       storeFile.close();
-      cout << "Store and product details saved successfully in " << fileName
-           << endl;
+      cout << "Store and product details saved successfully in "
+           << storeName + ".txt" << endl;
     } else {
       cout << "Unable to open file for writing.\n";
     }
@@ -507,6 +503,53 @@ public:
     }
   }
 
+  // New method to delete a store
+  void deleteStore(const string &name) {
+    // Delete the store file
+    if (remove((name + ".txt").c_str()) != 0) {
+      cerr << "Error deleting file: " << name + ".txt" << endl;
+    }
+
+    // Update the JSON file
+    ifstream jsonFile("store.json");
+    if (!jsonFile.is_open()) {
+      cerr << "Error: Could not open store.json for reading" << endl;
+      return;
+    }
+
+    stringstream buffer;
+    buffer << jsonFile.rdbuf();
+    string jsonContent = buffer.str();
+    jsonFile.close();
+
+    size_t storeStart = jsonContent.find("\"name\": \"" + name + "\"");
+    if (storeStart == string::npos) {
+      cout << "Store not found in JSON file." << endl;
+      return;
+    }
+
+    size_t objectStart = jsonContent.rfind("{", storeStart);
+    size_t objectEnd = jsonContent.find("}", storeStart);
+
+    if (objectStart != string::npos && objectEnd != string::npos) {
+      jsonContent.erase(objectStart, objectEnd - objectStart + 1);
+      // Remove trailing comma if present
+      size_t commaPos = jsonContent.find_first_not_of(" \n\r\t", objectStart);
+      if (commaPos != string::npos && jsonContent[commaPos] == ',') {
+        jsonContent.erase(commaPos, 1);
+      }
+    }
+
+    ofstream outFile("store.json");
+    if (outFile.is_open()) {
+      outFile << jsonContent;
+      outFile.close();
+      cout << "Store deleted successfully from JSON file." << endl;
+    } else {
+      cerr << "Error: Could not open store.json for writing" << endl;
+    }
+  }
+
   // Setter method for store name (Encapsulation)
   void setStoreName(string name) { storeName = name; }
 
@@ -514,35 +557,38 @@ public:
   ~Store() { cout << "Destructor called for store: " << storeName << endl; }
 };
 
+void gitOperations() {
+  system("git add .");
+  system("git commit -m \"Updated Products\"");
+  system("git push");
+}
+
 int main() {
   int choice;
   string storeName;
-  Store store; // Object creation
+  Store store; // Object creation (Instantiation)
 
   do {
     cout << "\nShopping Mall System Menu:\n";
     cout << "1. Enter Store Details\n";
     cout << "2. Edit Store Details\n";
     cout << "3. Display Store Details\n";
-    cout << "4. Exit\n";
+    cout << "4. Delete Store\n";
+    cout << "5. Exit\n";
     cout << "Enter your choice: ";
     cin >> choice;
 
     switch (choice) {
     case 1:
       store.enterStoreDetails();
-      system("git add .");
-      system("git commit -m \"Updated Products\"");
-      system("git push");
+      gitOperations();
       break;
     case 2:
       cout << "Enter Store Name to Edit: ";
       cin >> storeName;
       store.setStoreName(storeName);
       store.editStoreDetails();
-      system("git add .");
-      system("git commit -m \"Updated Products\"");
-      system("git push");
+      gitOperations();
       break;
     case 3:
       cout << "Enter Store Name to Display: ";
@@ -551,12 +597,18 @@ int main() {
       store.displayStoreDetails();
       break;
     case 4:
+      cout << "Enter Store Name to Delete: ";
+      cin >> storeName;
+      store.deleteStore(storeName);
+      gitOperations();
+      break;
+    case 5:
       cout << "Exiting...\n";
       break;
     default:
       cout << "Invalid choice. Please try again.\n";
     }
-  } while (choice != 4);
+  } while (choice != 5);
 
   return 0;
 }

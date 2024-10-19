@@ -1,9 +1,0 @@
-Store Name          Registration No     Floor No  
-------------------------------------------------
-Max                 4                   1         
-
-Products:
-Product Name        Quantity       Price     
------------------------------------------------
-shirt               20             400       
-pant                10             100       

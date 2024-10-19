@@ -5,5 +5,5 @@ Nike                1                   1
 Products:
 Product Name        Quantity       Price     
 -----------------------------------------------
-Shoes               40             10000     
-T-shirt             20             200       
+Shoes               2              200       
+T-shits             20             2         

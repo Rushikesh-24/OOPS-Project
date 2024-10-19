@@ -1,80 +1,22 @@
 {
     "stores": [
         {}
-        
     ,
         {
-            "id": "store11621",
+            "id": "store41196",
             "name": "Nike",
             "registration_no": "1",
             "floor_no": 1,
             "products": [
                 {
                     "name": "Shoes",
-                    "quantity": 40,
-                    "price": 10000
-                },
-                {
-                    "name": "T-shirt",
-                    "quantity": 20,
+                    "quantity": 2,
                     "price": 200
-                }
-            ]
-        }
-    ,
-        {
-            "id": "store86427",
-            "name": "Puma",
-            "registration_no": "2",
-            "floor_no": 2,
-            "products": [
-                {
-                    "name": "Shoes",
-                    "quantity": 50,
-                    "price": 500
-                }
-            ]
-        }
-    ,
-        {
-            "id": "store99453",
-            "name": "Adidas",
-            "registration_no": "3",
-            "floor_no": 3,
-            "products": [
-                {
-                    "name": "Shoes",
-                    "quantity": 10,
-                    "price": 2000
                 },
                 {
-                    "name": "Shirt",
-                    "quantity": 50,
-                    "price": 100
-                },
-                {
-                    "name": "Pants",
-                    "quantity": 50,
-                    "price": 600
-                }
-            ]
-        }
-    ,
-        {
-            "id": "store82210",
-            "name": "Max",
-            "registration_no": "4",
-            "floor_no": 1,
-            "products": [
-                {
-                    "name": "shirt",
+                    "name": "T-shits",
                     "quantity": 20,
-                    "price": 400
-                },
-                {
-                    "name": "pant",
-                    "quantity": 10,
-                    "price": 100
+                    "price": 2
                 }
             ]
         }
