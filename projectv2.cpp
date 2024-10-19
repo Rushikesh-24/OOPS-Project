@@ -512,16 +512,8 @@ public:
   }
 
  
-// Method to delete a store
 void deleteStore(const string& name) {
-    // Delete the store file
-    if (remove((name + ".txt").c_str()) != 0) {
-        cerr << "Error deleting file: " << name + ".txt" << endl;
-    } else {
-        cout << "Store file " << name + ".txt" << " deleted successfully." << endl;
-    }
-
-    // Update the JSON file
+    // Read the JSON file
     ifstream jsonFile("store.json");
     if (!jsonFile.is_open()) {
         cerr << "Error: Could not open store.json for reading" << endl;
@@ -534,42 +526,64 @@ void deleteStore(const string& name) {
     jsonFile.close();
 
     // Find the store object in the JSON content
-    size_t storeStart = jsonContent.find("\"name\": \"" + name + "\"");
-    if (storeStart == string::npos) {
-        cout << "Store not found in JSON file." << endl;
+    string storeStart = "\"name\": \"" + name + "\"";
+    size_t storePos = jsonContent.find(storeStart);
+    if (storePos == string::npos) {
+        cout << "Store '" << name << "' not found in JSON file." << endl;
         return;
     }
 
     // Find the start and end of the store object
-    size_t objectStart = jsonContent.rfind("{", storeStart);
-    size_t objectEnd = jsonContent.find("}", storeStart);
+    size_t objectStart = jsonContent.rfind("{", storePos);
+    size_t objectEnd = storePos;
+    int braceCount = 1;
+    while (braceCount > 0 && objectEnd < jsonContent.length()) {
+        objectEnd++;
+        if (jsonContent[objectEnd] == '{') braceCount++;
+        if (jsonContent[objectEnd] == '}') braceCount--;
+    }
 
-    if (objectStart != string::npos && objectEnd != string::npos) {
-        // Erase the store object from the JSON content
-        jsonContent.erase(objectStart, objectEnd - objectStart + 1);
-
-        // Remove trailing comma if present
-        size_t commaPos = jsonContent.find_last_not_of(" \n\r\t", objectStart);
-        if (commaPos != string::npos && jsonContent[commaPos] == ',') {
-            jsonContent.erase(commaPos, 1);
-        }
-
-        // Clean up any remaining empty objects or commas
-        jsonContent.erase(remove(jsonContent.begin(), jsonContent.end(), '{'), jsonContent.end());
-        jsonContent.erase(remove(jsonContent.begin(), jsonContent.end(), '}'), jsonContent.end());
-        jsonContent.erase(remove(jsonContent.begin(), jsonContent.end(), ','), jsonContent.end());
-
-        // Write the updated JSON content back to the file
-        ofstream outFile("store.json");
-        if (outFile.is_open()) {
-            outFile << jsonContent;
-            outFile.close();
-            cout << "Store deleted successfully from JSON file." << endl;
-        } else {
-            cerr << "Error: Could not open store.json for writing" << endl;
-        }
-    } else {
+    if (objectStart == string::npos || objectEnd == jsonContent.length()) {
         cout << "Error: Invalid JSON structure." << endl;
+        return;
+    }
+
+    // Erase the store object from the JSON content
+    jsonContent.erase(objectStart, objectEnd - objectStart + 1);
+
+    // Remove trailing comma if present
+    size_t commaPos = jsonContent.find_last_not_of(" \n\r\t", objectStart);
+    if (commaPos != string::npos && jsonContent[commaPos] == ',') {
+        jsonContent.erase(commaPos, 1);
+    }
+
+    // Clean up the JSON structure
+    size_t storesStart = jsonContent.find("\"stores\"");
+    size_t storesEnd = jsonContent.find("]", storesStart);
+    if (storesStart != string::npos && storesEnd != string::npos) {
+        string storesContent = jsonContent.substr(storesStart, storesEnd - storesStart + 1);
+        if (storesContent.find('{') == string::npos) {
+            // If no stores left, remove the entire "stores" array
+            jsonContent.erase(storesStart, storesEnd - storesStart + 1);
+        }
+    }
+
+    // Write the updated JSON content back to the file
+    ofstream outFile("store.json");
+    if (outFile.is_open()) {
+        outFile << jsonContent;
+        outFile.close();
+        cout << "Store '" << name << "' deleted successfully from JSON file." << endl;
+    } else {
+        cerr << "Error: Could not open store.json for writing" << endl;
+        return;
+    }
+
+    // Delete the store's individual file
+    if (remove((name + ".txt").c_str()) != 0) {
+        cerr << "Error deleting file: " << name + ".txt" << endl;
+    } else {
+        cout << "Store file " << name + ".txt" << " deleted successfully." << endl;
     }
 }
 
@@ -633,6 +647,7 @@ int main() {
         break;
       default:
         cout << "Invalid choice. Please try again.\n";
+        break;
       }
     } while (choice != 6);
 

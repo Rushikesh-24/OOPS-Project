@@ -1,0 +1,11 @@
+Store Name          Registration No     Floor No  
+------------------------------------------------
+Puma                2                   2         
+
+Products:
+Product Name        Quantity       Price     
+-----------------------------------------------
+Shoes               20             200       
+Nike Shoes          40             2000      
+Nike Bottle         2              2000      
+Puma Shoes          40             5000      
