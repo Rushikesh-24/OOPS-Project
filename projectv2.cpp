@@ -11,7 +11,7 @@ using namespace std;
 // Class definition for Product
 class Product {
 public:
-  string productName;  // Name of the product
+  char productName[50];  // Name of the product
   int productQuantity; // Quantity of the product available
   float productPrice;  // Price of the product
 
@@ -20,15 +20,19 @@ public:
   // - name: Name of the product
   // - quantity: Quantity of the product
   // - price: Price of the product
-  Product(string name, int quantity, float price)
-      : productName(name), productQuantity(quantity), productPrice(price) {}
+ Product(string name = "", int quantity = 0, float price = 0) {
+        strncpy(productName, name.c_str(), sizeof(productName) - 1);
+        productName[sizeof(productName) - 1] = '\0';
+        productQuantity = quantity;
+        productPrice = price;
+    }
 
   // Method to display product details in a formatted manner
   // This method prints the product's name, quantity, and price
   void displayProduct() const {
-    cout << left << setw(20) << productName << setw(15) << productQuantity
-         << setw(10) << productPrice << endl;
-  }
+        cout << left << setw(20) << productName << setw(15) << productQuantity
+             << setw(10) << productPrice << endl;
+    }
 
   // Method to save product details to a file
   // Parameters:
@@ -55,9 +59,9 @@ public:
  */
 class Store {
 private:
-  string creationDate;
-  string storeName;
-  string regNo;
+  char creationDate[20];
+    char storeName[50];
+    char regNo[20];
   int floorNo;
   vector<Product> products;
 
@@ -68,14 +72,11 @@ private:
    */
   // Helper method to parse JSON string to get stores array content
   string getStoresContent(const string &jsonStr) const {
-    size_t storesStart = jsonStr.find("[");
-    size_t storesEnd = jsonStr.find_last_of("]");
-
-    if (storesStart != string::npos && storesEnd != string::npos) {
-      return jsonStr.substr(storesStart + 1, storesEnd - storesStart - 1);
+        size_t storesStart = jsonStr.find("[");
+        size_t storesEnd = jsonStr.find_last_of("]");
+        return (storesStart != string::npos && storesEnd != string::npos) ? 
+               jsonStr.substr(storesStart + 1, storesEnd - storesStart - 1) : "";
     }
-    return "";
-  }
 
   /**
    * @brief Finds a product by name in the products vector.
@@ -84,40 +85,42 @@ private:
    * @return True if the product is found, false otherwise.
    */
   bool findProduct(const string &productName, size_t &index) const {
-    for (size_t i = 0; i < products.size(); ++i) {
-      if (products[i].productName == productName) {
-        index = i;
-        return true;
-      }
+        for (size_t i = 0; i < products.size(); ++i) {
+            if (string(products[i].productName) == productName) {
+                index = i;
+                return true;
+            }
+        }
+        return false;
     }
-    return false;
-  }
   /**
    * @brief Edits the details of a product at the specified index.
    * @param index The index of the product to edit.
    */
-  void editProduct(size_t index) {
-    cout << "\nCurrent details for product '" << products[index].productName
-         << "':\n";
-    cout << "Quantity: " << products[index].productQuantity << "\n";
-    cout << "Price: " << products[index].productPrice << "\n";
-    cout << "\nEnter new details (or enter -1 to keep current value):\n";
+ void editProduct(size_t index) {
+        cout << "\nCurrent details for product '" << products[index].productName << "':\n";
+        cout << "Quantity: " << products[index].productQuantity << "\n";
+        cout << "Price: " << products[index].productPrice << "\n";
+        
+        cout << "\nEnter new details (or enter -1 to keep current value):\n";
+        int newQuantity;
+        float newPrice;
 
-    int newQuantity;
-    float newPrice;
+        cout << "New Quantity: ";
+        cin >> newQuantity;
+        if (newQuantity != -1) {
+            products[index].productQuantity = newQuantity;
+        }
 
-    cout << "New Quantity: ";
-    cin >> newQuantity;
-    if (newQuantity != -1) {
-      products[index].productQuantity = newQuantity;
+        cout << "New Price: ";
+        cin >> newPrice;
+        if (newPrice != -1) {
+            products[index].productPrice = newPrice;
+        }
+
+        // Update binary file
+        saveToBinaryFile();
     }
-
-    cout << "New Price: ";
-    cin >> newPrice;
-    if (newPrice != -1) {
-      products[index].productPrice = newPrice;
-    }
-  }
 
   // Helper method to find a store in JSON content
   /**
@@ -155,10 +158,12 @@ private:
         }
       }
 
+      
+
       // Check if this is our store
       string storeObject =
           jsonContent.substr(storeStart, storeEnd - storeStart + 1);
-      string namePattern = "\"name\": \"" + storeName + "\"";
+      string namePattern = "\"name\": \"" + string(storeName) + "\"";
       if (storeObject.find(namePattern) != string::npos) {
         return make_pair(storeStart, storeEnd);
       }
@@ -168,6 +173,60 @@ private:
     return make_pair(string::npos, string::npos);
   }
 
+void saveToBinaryFile() const {
+        string filename = string(storeName) + ".dat";
+        ofstream file(filename, ios::binary | ios::trunc);
+        
+        if (file.is_open()) {
+            // Write store details
+            file.write(creationDate, sizeof(creationDate));
+            file.write(storeName, sizeof(storeName));
+            file.write(regNo, sizeof(regNo));
+            file.write((char*)&floorNo, sizeof(floorNo));
+
+            // Write number of products
+            size_t numProducts = products.size();
+            file.write((char*)&numProducts, sizeof(numProducts));
+
+            // Write each product
+            for (size_t i = 0; i < products.size(); ++i) {
+              file.write((char*)&products[i], sizeof(Product));
+            }
+
+            file.close();
+            cout << "Store data saved to binary file successfully" << endl;
+        } else {
+            cout << "Unable to open binary file for writing" << endl;
+        }
+    }
+    void loadFromBinaryFile() {
+      string filename = string(storeName) + ".dat";
+      ifstream file(filename, ios::binary);
+      
+      if (file.is_open()) {
+        // Read store details
+        file.read(creationDate, sizeof(creationDate));
+        file.read(storeName, sizeof(storeName));
+        file.read(regNo, sizeof(regNo));
+        file.read((char*)&floorNo, sizeof(floorNo));
+
+        // Read products
+        size_t numProducts;
+        file.read((char*)&numProducts, sizeof(numProducts));
+
+        products.clear();
+        for (size_t i = 0; i < numProducts; i++) {
+          Product product;
+          file.read((char*)&product, sizeof(Product));
+          products.push_back(product);
+        }
+
+        file.close();
+        cout << "Store data loaded from binary file successfully" << endl;
+      } else {
+        cout << "Unable to open binary file for reading" << endl;
+      }
+    }
 public:
   /**
    * @brief Updates the JSON file with the current store details.
@@ -254,22 +313,64 @@ public:
    * @brief Default constructor that initializes a store with the current date
    * and default values.
    */
-  Store() : creationDate(currentDate()), storeName(""), regNo(""), floorNo(0) {}
+   void displayStoreDetails() {
+    string fileName = string(storeName) + ".dat";
+    ifstream storeFile(fileName, ios::binary);
+
+    if (storeFile.is_open()) {
+      // Read store details
+      storeFile.read(creationDate, sizeof(creationDate));
+      storeFile.read(storeName, sizeof(storeName));
+      storeFile.read(regNo, sizeof(regNo));
+      storeFile.read((char*)&floorNo, sizeof(floorNo));
+
+      // Display store details
+      cout << "\nStore Details from " << fileName << ":\n";
+      cout << "Creation Date: " << creationDate << "\n";
+      cout << "Store Name: " << storeName << "\n";
+      cout << "Registration Number: " << regNo << "\n";
+      cout << "Floor Number: " << floorNo << "\n";
+
+      // Read products
+      size_t numProducts;
+      storeFile.read((char*)&numProducts, sizeof(numProducts));
+      cout << "Number of Products: " << numProducts << "\n";
+
+      for (size_t i = 0; i < numProducts; ++i) {
+        Product product;
+        storeFile.read((char*)&product, sizeof(Product));
+        product.displayProduct();
+      }
+
+      storeFile.close();
+    } else {
+      cout << "Unable to open file for reading.\n";
+    }
+  }
+  Store() {
+        string currentDateStr = currentDate();
+        strncpy(creationDate, currentDateStr.c_str(), sizeof(creationDate) - 1);
+        creationDate[sizeof(creationDate) - 1] = '\0';
+        
+        storeName[0] = '\0';
+        regNo[0] = '\0';
+        floorNo = 0;
+    }
 
   // Helper function to get the current date as a string
   /**
    * @brief Helper function to get the current date as a string.
    * @return The current date in the format YYYY-MM-DD.
    */
-  string currentDate() const {
-    time_t now = time(0);
-    tm *ltm = localtime(&now);
-    stringstream dateStream;
-    dateStream << 1900 + ltm->tm_year << "-" << setw(2) << setfill('0')
-               << 1 + ltm->tm_mon << "-" << setw(2) << setfill('0')
-               << ltm->tm_mday;
-    return dateStream.str();
-  }
+   string currentDate() const {
+        time_t now = time(0);
+        tm *ltm = localtime(&now);
+        stringstream dateStream;
+        dateStream << 1900 + ltm->tm_year << "-" 
+                  << setw(2) << setfill('0') << 1 + ltm->tm_mon << "-"
+                  << setw(2) << setfill('0') << ltm->tm_mday;
+        return dateStream.str();
+    }
 
   // Parameterized constructor (Encapsulation)
   /**
@@ -280,8 +381,16 @@ public:
    * @param floor The floor number of the store.
    */
   Store(string name, string reg, int floor)
-      : storeName(name), regNo(reg), floorNo(floor),
-        creationDate(currentDate()) {}
+      {
+          strncpy(storeName, name.c_str(), sizeof(storeName) - 1);
+          storeName[sizeof(storeName) - 1] = '\0';
+          strncpy(regNo, reg.c_str(), sizeof(regNo) - 1);
+          regNo[sizeof(regNo) - 1] = '\0';
+          floorNo = floor;
+          string currentDateStr = currentDate();
+          strncpy(creationDate, currentDateStr.c_str(), sizeof(creationDate) - 1);
+          creationDate[sizeof(creationDate) - 1] = '\0';
+      }
 
   // Static method to check if store exists (Encapsulation)
   /**
@@ -290,9 +399,9 @@ public:
    * @return True if the store exists, false otherwise.
    */
   static bool storeExists(const string &name) {
-    ifstream storeFile(name + ".txt");
-    return storeFile.good();
-  }
+        ifstream binaryFile(name + ".dat");
+        return binaryFile.good();
+    }
 
   // Method to enter store details (Encapsulation)
   /**
@@ -300,138 +409,158 @@ public:
    * floor number, and products.
    */
   void enterStoreDetails() {
-    while (true) {
-      cout << "Enter Store Name: ";
-      getline(cin, storeName);
+        string tempStoreName;
+        while (true) {
+            cout << "Enter Store Name: ";
+            getline(cin, tempStoreName);
 
-      if (storeExists(storeName)) {
-        cout << "Store name already exists! Please choose a different name.\n";
-      } else {
-        break;
-      }
+            if (storeExists(tempStoreName)) {
+                cout << "Store name already exists! Please choose a different name.\n";
+            } else {
+                strncpy(storeName, tempStoreName.c_str(), sizeof(storeName) - 1);
+                storeName[sizeof(storeName) - 1] = '\0';
+                break;
+            }
+        }
+
+        string tempRegNo;
+        cout << "Enter Registration Number: ";
+        getline(cin, tempRegNo);
+        strncpy(regNo, tempRegNo.c_str(), sizeof(regNo) - 1);
+        regNo[sizeof(regNo) - 1] = '\0';
+
+        cout << "Enter Floor Number: ";
+        cin >> floorNo;
+
+        enterProductDetails();
+        saveToBinaryFile();
+        saveToJSON();
     }
-
-    cout << "Enter Registration Number: ";
-    getline(cin, regNo);
-    cout << "Enter Floor Number: ";
-    cin >> floorNo;
-
-    enterProductDetails();
-    saveToFile();
-    saveToJSON();
-  }
 
   // Method to enter product details (Encapsulation)
   /**
    * @brief Method to enter product details for the store.
    */
-  void enterProductDetails() {
-    int numProducts;
-    cout << "Enter number of products: ";
-    cin >> numProducts;
-    cin.ignore(); // To ignore the newline character left in the buffer
+   void enterProductDetails() {
+        int numProducts;
+        cout << "Enter number of products: ";
+        cin >> numProducts;
+        cin.ignore();
 
-    for (int i = 0; i < numProducts; ++i) {
-      string productName;
-      int productQuantity;
-      float productPrice;
+        for (int i = 0; i < numProducts; ++i) {
+            string tempProductName;
+            int productQuantity;
+            float productPrice;
 
-      cout << "\nEnter details for Product " << i + 1 << ":\n";
-      cout << "Product Name: ";
-      getline(cin, productName);
+            cout << "\nEnter details for Product " << i + 1 << ":\n";
+            cout << "Product Name: ";
+            getline(cin, tempProductName);
 
-      size_t existingIndex;
-      if (findProduct(productName, existingIndex)) {
-        cout << "\nProduct '" << productName << "' already exists.\n";
-        cout << "1. Edit existing product\n";
-        cout << "2. Skip this product\n";
-        cout << "Enter your choice: ";
+            size_t existingIndex;
+            if (findProduct(tempProductName, existingIndex)) {
+                cout << "\nProduct '" << tempProductName << "' already exists.\n";
+                cout << "1. Edit existing product\n";
+                cout << "2. Skip this product\n";
+                cout << "Enter your choice: ";
 
-        int choice;
-        cin >> choice;
-        cin.ignore(); // To ignore the newline character left in the buffer
+                int choice;
+                cin >> choice;
+                cin.ignore();
 
-        if (choice == 1) {
-          editProduct(existingIndex);
+                if (choice == 1) {
+                    editProduct(existingIndex);
+                }
+                continue;
+            }
+
+            cout << "Product Quantity: ";
+            cin >> productQuantity;
+            cout << "Product Price: ";
+            cin >> productPrice;
+            cin.ignore();
+
+            Product newProduct(tempProductName, productQuantity, productPrice);
+            products.push_back(newProduct);
         }
-        continue; // Skip to next product
-      }
-
-      // If product doesn't exist, get new product details
-      cout << "Product Quantity: ";
-      cin >> productQuantity;
-      cout << "Product Price: ";
-      cin >> productPrice;
-      cin.ignore(); // To ignore the newline character left in the buffer
-
-      // Creating new Product object
-      Product newProduct(productName, productQuantity, productPrice);
-      products.push_back(newProduct);
     }
-  }
 
   // Method to edit store details (Encapsulation)
   /**
    * @brief Method to edit the details of the store, including name,
    * registration number, floor number, and products.
    */
-  void editStoreDetails() {
-    if (!storeExists(storeName)) {
-      cout << "Store doesn't exist! Please enter a valid store name.\n";
-      return;
+   void editStoreDetails() {
+        loadFromBinaryFile(); // Load current data from binary file
+
+        if (!storeExists(storeName)) {
+            cout << "Store doesn't exist! Please enter a valid store name.\n";
+            return;
+        }
+
+        string tempRegNo;
+        cout << "Enter new Registration Number (current: " << regNo << "): ";
+        cin >> tempRegNo;
+        strncpy(regNo, tempRegNo.c_str(), sizeof(regNo) - 1);
+        regNo[sizeof(regNo) - 1] = '\0';
+
+        cout << "Enter new Floor Number (current: " << floorNo << "): ";
+        cin >> floorNo;
+
+        string currentDateStr = currentDate();
+        strncpy(creationDate, currentDateStr.c_str(), sizeof(creationDate) - 1);
+        creationDate[sizeof(creationDate) - 1] = '\0';
+
+        char editProducts;
+        cout << "\nDo you want to edit products? (y/n): ";
+        cin >> editProducts;
+
+        if (tolower(editProducts) == 'y') {
+            // Display current products and handle editing
+            cout << "\nCurrent products:\n";
+            displayProducts();
+
+            cout << "\n1. Add new products\n";
+            cout << "2. Edit existing products\n";
+            cout << "Enter your choice: ";
+
+            int choice;
+            cin >> choice;
+            cin.ignore();
+
+            if (choice == 1) {
+                enterProductDetails();
+            } else if (choice == 2) {
+                editExistingProducts();
+            }
+        }
+
+        // Save to all file formats
+        saveToBinaryFile();
+        updateJSON();
     }
-
-    cout << "Editing details for store: " << storeName << endl;
-    cout << "Enter new Registration Number (current: " << regNo << "): ";
-    cin >> regNo;
-    cout << "Enter new Floor Number (current: " << floorNo << "): ";
-    cin >> floorNo;
-    creationDate = currentDate();
-
-    // Ask if user wants to edit products
-    char editProducts;
-    cout << "\nDo you want to edit products? (y/n): ";
-    cin >> editProducts;
-
-    if (tolower(editProducts) == 'y') {
-      cout << "\nCurrent products:\n";
-      cout << left << setw(20) << "Product Name" << setw(15) << "Quantity"
-           << setw(10) << "Price" << endl;
-      cout << "-----------------------------------------------" << endl;
-
-      for (size_t i = 0; i < products.size(); ++i) {
-        products[i].displayProduct();
-      }
-
-      cout << "\n1. Add new products\n";
-      cout << "2. Edit existing products\n";
-      cout << "Enter your choice: ";
-
-      int choice;
-      cin >> choice;
-
-      if (choice == 1) {
-        enterProductDetails();
-      } else if (choice == 2) {
+     void displayProducts() const {
+        cout << left << setw(20) << "Product Name" 
+             << setw(15) << "Quantity"
+             << setw(10) << "Price" << endl;
+        cout << "-----------------------------------------------" << endl;
+        for (size_t i = 0; i < products.size(); ++i) {
+            products[i].displayProduct();
+        }
+    }
+    void editExistingProducts() {
         string productName;
         cout << "\nEnter product name to edit (or 'done' to finish): ";
-        cin.ignore(); // To ignore any leftover newline character in the buffer
-
+        
         while (getline(cin, productName) && productName != "done") {
-          size_t index;
-          if (findProduct(productName, index)) {
-            editProduct(index);
-          } else {
-            cout << "Product not found!\n";
-          }
-          cout << "\nEnter product name to edit (or 'done' to finish): ";
+            size_t index;
+            if (findProduct(productName, index)) {
+                editProduct(index);
+            } else {
+                cout << "Product not found!\n";
+            }
+            cout << "\nEnter product name to edit (or 'done' to finish): ";
         }
-      }
     }
-
-    saveToFile();
-    updateJSON();
-  }
 
   // Helper function to escape special characters in JSON strings
   /**
@@ -568,51 +697,11 @@ public:
   /**
    * @brief Saves the current store details to a text file.
    */
-  void saveToFile() {
-    ofstream storeFile(storeName + ".txt");
-    if (storeFile.is_open()) {
-      storeFile << left << setw(20) << "Store Name" << setw(20)
-                << "Registration No" << setw(20) << "Floor No" << setw(20)
-                << "Creation Date" << endl;
-      storeFile << "-----------------------------------------------------------"
-                   "---------------"
-                << endl;
-      storeFile << left << setw(20) << storeName << setw(20) << regNo
-                << setw(20) << floorNo << setw(20) << creationDate << endl;
-      storeFile << "\nProducts:\n";
-      storeFile << left << setw(20) << "Product Name" << setw(15) << "Quantity"
-                << setw(10) << "Price" << endl;
-      storeFile << "-----------------------------------------------" << endl;
-      for (size_t i = 0; i < products.size(); ++i) {
-        products[i].saveProduct(storeFile);
-      }
-      storeFile.close();
-      cout << "Store and product details saved successfully in "
-           << storeName + ".txt" << endl;
-    } else {
-      cout << "Unable to open file for writing.\n";
-    }
-  }
 
   // Method to display store details (Encapsulation)
   /**
    * @brief Displays the store details by reading from the store's text file.
    */
-  void displayStoreDetails() {
-    string fileName = storeName + ".txt";
-    ifstream storeFile(fileName);
-
-    if (storeFile.is_open()) {
-      string line;
-      cout << "\nDetails from " << fileName << ":\n";
-      while (getline(storeFile, line)) {
-        cout << line << endl;
-      }
-      storeFile.close();
-    } else {
-      cout << "Unable to open file for reading.\n";
-    }
-  }
 
   /**
    * @brief Deletes the store with the given name from the JSON file and its
@@ -691,10 +780,10 @@ public:
     }
 
     // Delete the store's individual file
-    if (remove((name + ".txt").c_str()) != 0) {
-      cerr << "Error deleting file: " << name + ".txt" << endl;
+    if (remove((name + ".dat").c_str()) != 0) {
+      cerr << "Error deleting file: " << name + ".dat" << endl;
     } else {
-      cout << "Store file " << name + ".txt"
+      cout << "Store file " << name + ".dat"
            << " deleted successfully." << endl;
     }
   }
@@ -704,7 +793,10 @@ public:
    * @brief Setter method for the store name.
    * @param name The new name of the store.
    */
-  void setStoreName(string name) { storeName = name; }
+  void setStoreName(string name) {
+    strncpy(storeName, name.c_str(), sizeof(storeName) - 1);
+    storeName[sizeof(storeName) - 1] = '\0';
+  }
 
   // Destructor (Encapsulation)
   /**
