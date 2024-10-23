@@ -45,7 +45,7 @@ public:
   // Destructor to clean up resources
   // This destructor is called when the Product object is destroyed
   ~Product() {
-    cout << "Destructor called for product: " << productName << endl;
+    // cout << "Destructor called for product: " << productName << endl;
   }
 };
 /**
@@ -313,40 +313,72 @@ public:
    * @brief Default constructor that initializes a store with the current date
    * and default values.
    */
-   void displayStoreDetails() {
+  void displayStoreDetails() {
     string fileName = string(storeName) + ".dat";
     ifstream storeFile(fileName, ios::binary);
-
+    
     if (storeFile.is_open()) {
-      // Read store details
-      storeFile.read(creationDate, sizeof(creationDate));
-      storeFile.read(storeName, sizeof(storeName));
-      storeFile.read(regNo, sizeof(regNo));
-      storeFile.read((char*)&floorNo, sizeof(floorNo));
-
-      // Display store details
-      cout << "\nStore Details from " << fileName << ":\n";
-      cout << "Creation Date: " << creationDate << "\n";
-      cout << "Store Name: " << storeName << "\n";
-      cout << "Registration Number: " << regNo << "\n";
-      cout << "Floor Number: " << floorNo << "\n";
-
-      // Read products
-      size_t numProducts;
-      storeFile.read((char*)&numProducts, sizeof(numProducts));
-      cout << "Number of Products: " << numProducts << "\n";
-
-      for (size_t i = 0; i < numProducts; ++i) {
-        Product product;
-        storeFile.read((char*)&product, sizeof(Product));
-        product.displayProduct();
-      }
-
-      storeFile.close();
+        // Read store details
+        storeFile.read(creationDate, sizeof(creationDate));
+        storeFile.read(storeName, sizeof(storeName));
+        storeFile.read(regNo, sizeof(regNo));
+        storeFile.read((char*)&floorNo, sizeof(floorNo));
+        
+        // Set up initial formatting
+        cout << fixed << showpoint << setprecision(2);
+        
+        // Display header with border
+        cout << "\n" << setfill('=') << setw(50) << "=" << endl;
+        cout << setfill(' ') << setw(30) << "STORE DETAILS" << endl;
+        cout << setfill('=') << setw(50) << "=" << endl;
+        
+        // Display store information with aligned columns
+        cout << setfill(' ');
+        cout << "\nFile Name          : " << left << setw(30) << fileName;
+        cout << "\nCreation Date      : " << left << setw(30) << creationDate;
+        cout << "\nStore Name         : " << left << setw(30) << storeName;
+        cout << "\nRegistration No    : " << left << setw(30) << regNo;
+        cout << "\nFloor Number       : " << left << setw(30) << floorNo;
+        
+        // Read and display products
+        size_t numProducts;
+        storeFile.read((char*)&numProducts, sizeof(numProducts));
+        
+        // Products header
+        cout << "\n\n" << setfill('-') << setw(50) << "-" << endl;
+        cout << setfill(' ') << "PRODUCT LIST (" << numProducts << " items)" << endl;
+        cout << setfill('-') << setw(50) << "-" << endl;
+        
+        // Product table header
+        cout << setfill(' ');
+        cout << left
+             << setw(20) << "\nProduct Name"
+             << setw(12) << "Price"
+             << setw(10) << "Quantity"
+             << setw(15) << "Category" << endl;
+        
+        cout << setfill('-') << setw(50) << "-" << endl;
+        
+        // Display products
+        for (size_t i = 0; i < numProducts; ++i) {
+            Product product;
+            storeFile.read((char*)&product, sizeof(Product));
+            
+            cout << setfill(' ');
+            cout << left
+                 << setw(20) << product.productName
+                 << setw(12) << product.productPrice
+                 << setw(10) << product.productQuantity<< endl;
+        }
+        
+        // Bottom border
+        cout << setfill('=') << setw(50) << "=" << endl;
+        
+        storeFile.close();
     } else {
-      cout << "Unable to open file for reading.\n";
+        cout << "\nError: Unable to open file for reading.\n";
     }
-  }
+}
   Store() {
         string currentDateStr = currentDate();
         strncpy(creationDate, currentDateStr.c_str(), sizeof(creationDate) - 1);
