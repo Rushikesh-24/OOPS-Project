@@ -201,9 +201,14 @@ void saveToBinaryFile() const {
     }
     void loadFromBinaryFile() {
       string filename = string(storeName) + ".dat";
-      ifstream file(filename, ios::binary);
-      
-      if (file.is_open()) {
+      ifstream file;
+
+      try {
+        file.open(filename, ios::binary);
+        if (!file.is_open()) {
+          throw runtime_error("Unable to open binary file for reading");
+        }
+
         // Read store details
         file.read(creationDate, sizeof(creationDate));
         file.read(storeName, sizeof(storeName));
@@ -223,8 +228,8 @@ void saveToBinaryFile() const {
 
         file.close();
         cout << "Store data loaded from binary file successfully" << endl;
-      } else {
-        cout << "Unable to open binary file for reading" << endl;
+      } catch (const exception &e) {
+        cerr << e.what() << endl;
       }
     }
 public:
