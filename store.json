@@ -1,3 +1,43 @@
 {
-    
+    "stores": [
+        {
+            "id": "store17397",
+            "name": "Nike Store",
+            "registration_no": "1",
+            "floor_no": 1,
+            "creation_date": "2024-11-11",
+            "products": [
+                {
+                    "name": "Shoes",
+                    "quantity": 40,
+                    "price": 4000
+                },
+                {
+                    "name": "T-Shirt",
+                    "quantity": 20,
+                    "price": 500
+                }
+            ]
+        }
+    ,
+        {
+            "id": "store91394",
+            "name": "Adidas Store",
+            "registration_no": "2",
+            "floor_no": 1,
+            "creation_date": "2024-11-11",
+            "products": [
+                {
+                    "name": "Shoes",
+                    "quantity": 10,
+                    "price": 5000
+                },
+                {
+                    "name": "T-Shirt",
+                    "quantity": 20,
+                    "price": 500
+                }
+            ]
+        }
+            ]
 }
