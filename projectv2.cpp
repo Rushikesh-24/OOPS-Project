@@ -478,48 +478,31 @@ public:
   /**
    * @brief Method to enter product details for the store.
    */
-   void enterProductDetails() {
-        int numProducts;
-        cout << "Enter number of products: ";
-        cin >> numProducts;
-        cin.ignore();
+  void enterProductDetails() {
+    int numProducts;
+    cout << "Enter number of products: ";
+    cin >> numProducts;
+    cin.ignore();
 
-        for (int i = 0; i < numProducts; ++i) {
-            string tempProductName;
-            int productQuantity;
-            float productPrice;
+    for (int i = 0; i < numProducts; ++i) {
+      string tempProductName;
+      int productQuantity;
+      float productPrice;
 
-            cout << "\nEnter details for Product " << i + 1 << ":\n";
-            cout << "Product Name: ";
-            getline(cin, tempProductName);
+      cout << "\nEnter details for Product " << i + 1 << ":\n";
+      cout << "Product Name: ";
+      getline(cin, tempProductName);
 
-            size_t existingIndex;
-            if (findProduct(tempProductName, existingIndex)) {
-                cout << "\nProduct '" << tempProductName << "' already exists.\n";
-                cout << "1. Edit existing product\n";
-                cout << "2. Skip this product\n";
-                cout << "Enter your choice: ";
+      cout << "Product Quantity: ";
+      cin >> productQuantity;
+      cout << "Product Price: ";
+      cin >> productPrice;
+      cin.ignore();
 
-                int choice;
-                cin >> choice;
-                cin.ignore();
-
-                if (choice == 1) {
-                    editProduct(existingIndex);
-                }
-                continue;
-            }
-
-            cout << "Product Quantity: ";
-            cin >> productQuantity;
-            cout << "Product Price: ";
-            cin >> productPrice;
-            cin.ignore();
-
-            Product newProduct(tempProductName, productQuantity, productPrice);
-            products.push_back(newProduct);
-        }
+      Product newProduct(tempProductName, productQuantity, productPrice);
+      products.push_back(newProduct);
     }
+  }
 
   // Method to edit store details (Encapsulation)
   /**
